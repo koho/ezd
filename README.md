@@ -55,7 +55,6 @@ A list of full parameters:
 | service.password    | string       | Password of the user.                                                        | :heavy_check_mark: | :x:                |
 | service.delayed     | bool         | Delayed start of service.                                                    | :heavy_check_mark: | :x:                |
 
-
 ### Commands
 
 Run `ezd -h` to see all commands.
@@ -104,10 +103,10 @@ The `deploy.json` file looks like this:
   },
   "service": {
     "name": "notebook",
-    "program": "jupyter",
-    "args": ["notebook"],
+    "program": "jupyter-notebook",
+    "args": [],
     "display": "Jupyter Notebook",
-    "description": "Jupyter Notebook Service",
+    "description": "Jupyter Notebook Service"
   }
 }
 ```
@@ -137,7 +136,10 @@ For non-python project, we can omit virtual environment since we don't need it. 
   "service": {
     "name": "pingtest",
     "program": "ping",
-    "args": ["-t", "1.1.1.1"],
+    "args": [
+      "-t",
+      "1.1.1.1"
+    ],
     "display": "Ping it",
     "description": "A ping test service"
   }

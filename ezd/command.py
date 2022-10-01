@@ -51,7 +51,10 @@ def install_linux():
                 return os.path.join(bin_dir, prog)
         return prog
 
-    service_options = {"ExecStart": locate_executable(Service.program), "WorkingDirectory": os.getcwd()}
+    service_options = {
+        "ExecStart": os.path.abspath(locate_executable(Service.program)),
+        "WorkingDirectory": os.getcwd(),
+    }
     if Service.user:
         service_options["User"] = Service.user
     if Service.restart > 0:
@@ -65,7 +68,7 @@ def install_linux():
     parser["Unit"] = unit_options
     parser["Service"] = service_options
     parser["Install"] = {"WantedBy": "multi-user.target"}
-    with open(f'/etc/systemd/system/{Service.name}.service', 'w') as f:
+    with open(f'/etc/systemd/system/{Service.name}.service', 'w', encoding='utf8') as f:
         parser.write(f)
     if Service.start == 'auto':
         os.system(f'systemctl enable {Service.name}')
@@ -92,7 +95,7 @@ def uninstall():
     else:
         os.system(f'systemctl stop {Service.name}')
         os.system(f'systemctl disable {Service.name}')
-        os.system(f'rm /etc/systemd/system/{Service.name}')
+        os.system(f'rm /etc/systemd/system/{Service.name}.service')
         os.system(f'systemctl daemon-reload')
         os.system(f'systemctl reset-failed')
 
