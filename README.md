@@ -1,17 +1,21 @@
 # Easy Deployment
 
-Easy deployment tool for Python application. Deploy your application with one command that triggers two steps:
+Easy deployment tool for Python application. There are mainly two parts:
 
 - Create a virtual environment (Optional).
 - Install your application as a service.
 
+Deploy your application with one command!
+
 ## Install
 
-Download and install the `ezd` package for Python.
+It's recommended that you install this package in the **Global Python Environment**.
 
 ```
 pip install ezd
 ```
+
+On Windows, be careful if you want to uninstall this package. Make sure all services created with this tool are removed.
 
 ## Usage
 
@@ -26,8 +30,7 @@ Run `ezd init` to create a config file named `deploy.json`.
   },
   "service": {
     "name": "",
-    "program": "",
-    "args": [],
+    "cmd": [],
     "display": "",
     "description": ""
   }
@@ -43,8 +46,7 @@ A list of full parameters:
 | env.local           | string       | A directory contains local package file.                                     | :heavy_check_mark: | :heavy_check_mark: |
 | env.requirement     | bool         | Whether to install dependencies in `requirements.txt`. Default is `true`.    | :heavy_check_mark: | :heavy_check_mark: |
 | service.name        | string       | The name of service.                                                         | :heavy_check_mark: | :heavy_check_mark: |
-| service.program     | string       | Executable file of service.                                                  | :heavy_check_mark: | :heavy_check_mark: |
-| service.args        | list[string] | Arguments to be passed to executable.                                        | :heavy_check_mark: | :heavy_check_mark: |
+| service.cmd         | list[string] | The command line to be executed.                                             | :heavy_check_mark: | :heavy_check_mark: |
 | service.display     | string       | Display name of service.                                                     | :heavy_check_mark: | :x:                |
 | service.description | string       | Description of service.                                                      | :heavy_check_mark: | :heavy_check_mark: |
 | service.start       | string       | Start type of service (demand/auto/boot/disabled/system). Default is `auto`. | :heavy_check_mark: | :heavy_check_mark: |
@@ -78,9 +80,55 @@ Available commands:
 | init      | Create an example config file `deploy.json`.                  |
 | deploy    | Create virtual environment and install dependencies.          |
 | install   | Install a service (Automatically run `deploy` command first). |
-| uninstall | Remove service.                                               |
+| uninstall | Remove service (Automatically run `stop` command first).      |
 | start     | Start service.                                                |
 | stop      | Stop service.                                                 |
+
+### Update config
+
+#### Upgrade or install packages
+
+If you need to upgrade or install packages, just edit the `requirements.txt` file and follow the steps below:
+
+1. Stop the service
+
+    ```shell
+    ezd stop
+    ```
+
+2. Deploy new packages
+
+    ```shell
+    ezd deploy
+    ```
+
+3. Start the service
+
+    ```shell
+    ezd start
+    ```
+
+#### Update service
+
+If you update the service settings of the config file, you must `uninstall` the old service first.
+
+1. Uninstall the service
+
+    ```shell
+    ezd uninstall
+    ```
+
+2. Install service
+
+    ```shell
+    ezd install
+    ```
+
+3. Start the service
+
+    ```shell
+    ezd start
+    ```
 
 ## Examples
 
@@ -103,8 +151,7 @@ The `deploy.json` file looks like this:
   },
   "service": {
     "name": "notebook",
-    "program": "jupyter-notebook",
-    "args": [],
+    "cmd": ["jupyter-notebook.exe"],
     "display": "Jupyter Notebook",
     "description": "Jupyter Notebook Service"
   }
@@ -135,11 +182,7 @@ For non-python project, we can omit virtual environment since we don't need it. 
 {
   "service": {
     "name": "pingtest",
-    "program": "ping",
-    "args": [
-      "-t",
-      "1.1.1.1"
-    ],
+    "cmd": ["ping", "-t", "1.1.1.1"],
     "display": "Ping it",
     "description": "A ping test service"
   }

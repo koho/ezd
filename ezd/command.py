@@ -1,7 +1,6 @@
 import argparse
 import configparser
 import os
-import shutil
 import subprocess
 import sys
 import venv
@@ -23,17 +22,20 @@ def ensure_service():
 
 def install_windows():
     from ezd import winsvc
-    if Env.name != "":
-        bin_dir = os.path.abspath(os.path.join(Env.name, 'Scripts'))
-        cmd = winsvc.get_command_line(os.path.join(bin_dir, "python.exe"),
-                                      os.path.join(bin_dir, os.path.basename(winsvc.SVC_FILE)),
-                                      Service.program, Service.args)
-    else:
-        cmd = winsvc.get_command_line(sys.executable, winsvc.SVC_FILE, Service.program, Service.args)
+    bin_dir = os.path.abspath(os.path.join(Env.name, 'Scripts')) if Env.name else None
+    if bin_dir:
+        # We should use the python interpreter in the virtual environment.
+        preset = ["python.exe", "python_d.exe", "pythonw.exe", "pythonw_d.exe"]
+        prog = Service.cmd[0]
+        if prog in preset:
+            Service.cmd[0] = os.path.join(bin_dir, prog)
+        elif prog in map(lambda x: os.path.splitext(x)[0], preset):
+            Service.cmd[0] = os.path.join(bin_dir, prog + ".exe")
+    cmd = winsvc.get_command_line(sys.executable, winsvc.SVC_FILE, Service.cmd)
     winsvc.install_service(Service.name, cmd, Service.display, Service.description, Service.start,
                            run_interactive=Service.interactive, service_deps=Service.deps,
                            user_name=Service.user, password=Service.password, delayed_start=Service.delayed,
-                           restart=Service.restart)
+                           restart=Service.restart, env=bin_dir)
 
 
 def install_linux():
@@ -51,8 +53,10 @@ def install_linux():
                 return os.path.join(bin_dir, prog)
         return prog
 
+    Service.cmd[0] = os.path.abspath(locate_executable(Service.cmd[0]))
+
     service_options = {
-        "ExecStart": os.path.abspath(locate_executable(Service.program)),
+        "ExecStart": subprocess.list2cmdline(Service.cmd),
         "WorkingDirectory": os.getcwd(),
     }
     if Service.user:
@@ -60,8 +64,6 @@ def install_linux():
     if Service.restart > 0:
         service_options["Restart"] = "on-failure"
         service_options["RestartSec"] = f"{Service.restart}s"
-    if Service.args:
-        service_options["ExecStart"] += ' ' + ' '.join(Service.args)
 
     parser = configparser.ConfigParser()
     parser.optionxform = str
@@ -76,7 +78,7 @@ def install_linux():
 
 def install():
     ensure_service()
-    if not Service.program:
+    if not Service.cmd:
         print_error("The executable file of the service is not provided.")
         sys.exit(1)
     if Env.name:
@@ -91,6 +93,7 @@ def uninstall():
     ensure_service()
     if IS_WIN:
         import win32serviceutil
+        win32serviceutil.StopService(Service.name)
         win32serviceutil.RemoveService(Service.name)
     else:
         os.system(f'systemctl stop {Service.name}')
@@ -143,10 +146,6 @@ def deploy():
                 if Env.lookup:
                     args.extend(['--no-index', '--find-links', Env.lookup])
                 subprocess.check_call(args, shell=False)
-    # Install service script into virtual environment
-    if IS_WIN:
-        from ezd import winsvc
-        shutil.copy(winsvc.SVC_FILE, bin_dir)
 
 
 def create_env(path):

@@ -9,8 +9,7 @@ TEMPLATE = """{
   },
   "service": {
     "name": "",
-    "program": "",
-    "args": [],
+    "cmd": [],
     "display": "",
     "description": ""
   }
@@ -34,8 +33,7 @@ class Env(Config):
 
 class Service(Config):
     name: str = ""
-    program: str = ""
-    args: list = []
+    cmd: list = []
     display: str = ""
     description: str = None
     start: str = "auto"
