@@ -93,7 +93,10 @@ def uninstall():
     ensure_service()
     if IS_WIN:
         import win32serviceutil
-        win32serviceutil.StopService(Service.name)
+        try:
+            win32serviceutil.StopService(Service.name)
+        except:
+            pass
         win32serviceutil.RemoveService(Service.name)
     else:
         os.system(f'systemctl stop {Service.name}')
