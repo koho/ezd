@@ -62,8 +62,10 @@ def install_linux():
     if Service.user:
         service_options["User"] = Service.user
     if Service.restart > 0:
-        service_options["Restart"] = "on-failure"
-        service_options["RestartSec"] = f"{Service.restart}s"
+        service_options["Restart"] = Service.restart_policy
+        service_options["RestartSec"] = Service.restart
+    if Service.runtime_max_sec > 0:
+        service_options["RuntimeMaxSec"] = Service.runtime_max_sec
 
     parser = configparser.ConfigParser()
     parser.optionxform = str

@@ -38,6 +38,8 @@ class Service(Config):
     description: str = None
     start: str = "auto"
     restart: int = 30
+    restart_policy: str = "on-failure"
+    runtime_max_sec: int = 0
     deps: list = None
     interactive: bool = False
     user: str = None
