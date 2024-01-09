@@ -35,7 +35,7 @@ def install_windows():
     winsvc.install_service(Service.name, cmd, Service.display, Service.description, Service.start,
                            run_interactive=Service.interactive, service_deps=Service.deps,
                            user_name=Service.user, password=Service.password, delayed_start=Service.delayed,
-                           restart=Service.restart, env=bin_dir)
+                           restart=Service.restart, working_directory=Service.working_directory, env=bin_dir)
 
 
 def install_linux():
@@ -57,7 +57,7 @@ def install_linux():
 
     service_options = {
         "ExecStart": subprocess.list2cmdline(Service.cmd),
-        "WorkingDirectory": os.getcwd(),
+        "WorkingDirectory": os.path.abspath(Service.working_directory),
     }
     if Service.user:
         service_options["User"] = Service.user

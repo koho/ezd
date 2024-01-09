@@ -39,25 +39,26 @@ Run `ezd init` to create a config file named `deploy.json`.
 
 A list of full parameters:
 
-| Parameter               | Type         | Description                                                                                        | Windows            | Linux              |
-|-------------------------|--------------|----------------------------------------------------------------------------------------------------|--------------------|--------------------|
-| env.name                | string       | The name of virtual environment.                                                                   | :heavy_check_mark: | :heavy_check_mark: |
-| env.lookup              | string       | Offline package lookup directory used by pip.                                                      | :heavy_check_mark: | :heavy_check_mark: |
-| env.local               | string       | A directory contains local package file.                                                           | :heavy_check_mark: | :heavy_check_mark: |
-| env.requirement         | bool         | Whether to install dependencies in `requirements.txt`. Default is `true`.                          | :heavy_check_mark: | :heavy_check_mark: |
-| service.name            | string       | The name of service.                                                                               | :heavy_check_mark: | :heavy_check_mark: |
-| service.cmd             | list[string] | The command line to be executed.                                                                   | :heavy_check_mark: | :heavy_check_mark: |
-| service.display         | string       | Display name of service.                                                                           | :heavy_check_mark: | :x:                |
-| service.description     | string       | Description of service.                                                                            | :heavy_check_mark: | :heavy_check_mark: |
-| service.start           | string       | Start type of service (demand/auto/boot/disabled/system). Default is `auto`.                       | :heavy_check_mark: | :heavy_check_mark: |
-| service.restart         | int          | Restart delay (seconds) when service failed. Default is `30`.                                      | :heavy_check_mark: | :heavy_check_mark: |
-| service.restart_policy  | string       | Configures whether the service shall be restarted when the service exits. Default is `on-failure`. | :x:                | :heavy_check_mark: |
-| service.runtime_max_sec | int          | Configures a maximum time for the service to run. Default is `0`.                                  | :x:                | :heavy_check_mark: |
-| service.deps            | list[string] | Dependencies of service.                                                                           | :heavy_check_mark: | :heavy_check_mark: |
-| service.interactive     | bool         | Run service in interactive mode. Default is `false`.                                               | :heavy_check_mark: | :x:                |
-| service.user            | string       | Run service with given user.                                                                       | :heavy_check_mark: | :heavy_check_mark: |
-| service.password        | string       | Password of the user.                                                                              | :heavy_check_mark: | :x:                |
-| service.delayed         | bool         | Delayed start of service.                                                                          | :heavy_check_mark: | :x:                |
+| Parameter                 | Type         | Description                                                                                        | Windows            | Linux              |
+|---------------------------|--------------|----------------------------------------------------------------------------------------------------|--------------------|--------------------|
+| env.name                  | string       | The name of virtual environment.                                                                   | :heavy_check_mark: | :heavy_check_mark: |
+| env.lookup                | string       | Offline package lookup directory used by pip.                                                      | :heavy_check_mark: | :heavy_check_mark: |
+| env.local                 | string       | A directory contains local package file.                                                           | :heavy_check_mark: | :heavy_check_mark: |
+| env.requirement           | bool         | Whether to install dependencies in `requirements.txt`. Default is `true`.                          | :heavy_check_mark: | :heavy_check_mark: |
+| service.name              | string       | The name of service.                                                                               | :heavy_check_mark: | :heavy_check_mark: |
+| service.cmd               | list[string] | The command line to be executed.                                                                   | :heavy_check_mark: | :heavy_check_mark: |
+| service.display           | string       | Display name of service.                                                                           | :heavy_check_mark: | :x:                |
+| service.description       | string       | Description of service.                                                                            | :heavy_check_mark: | :heavy_check_mark: |
+| service.start             | string       | Start type of service (demand/auto/boot/disabled/system). Default is `auto`.                       | :heavy_check_mark: | :heavy_check_mark: |
+| service.restart           | int          | Restart delay (seconds) when service failed. Default is `30`.                                      | :heavy_check_mark: | :heavy_check_mark: |
+| service.restart_policy    | string       | Configures whether the service shall be restarted when the service exits. Default is `on-failure`. | :x:                | :heavy_check_mark: |
+| service.runtime_max_sec   | int          | Configures a maximum time for the service to run. Default is `0`.                                  | :x:                | :heavy_check_mark: |
+| service.working_directory | string       | Configures the working directory of the service. Default is `.`.                                   | :heavy_check_mark: | :heavy_check_mark: |
+| service.deps              | list[string] | Dependencies of service.                                                                           | :heavy_check_mark: | :heavy_check_mark: |
+| service.interactive       | bool         | Run service in interactive mode. Default is `false`.                                               | :heavy_check_mark: | :x:                |
+| service.user              | string       | Run service with given user.                                                                       | :heavy_check_mark: | :heavy_check_mark: |
+| service.password          | string       | Password of the user.                                                                              | :heavy_check_mark: | :x:                |
+| service.delayed           | bool         | Delayed start of service.                                                                          | :heavy_check_mark: | :x:                |
 
 ### Commands
 
@@ -153,7 +154,9 @@ The `deploy.json` file looks like this:
   },
   "service": {
     "name": "notebook",
-    "cmd": ["jupyter-notebook.exe"],
+    "cmd": [
+      "jupyter-notebook.exe"
+    ],
     "display": "Jupyter Notebook",
     "description": "Jupyter Notebook Service"
   }
@@ -184,7 +187,11 @@ For non-python project, we can omit virtual environment since we don't need it. 
 {
   "service": {
     "name": "pingtest",
-    "cmd": ["ping", "-t", "1.1.1.1"],
+    "cmd": [
+      "ping",
+      "-t",
+      "1.1.1.1"
+    ],
     "display": "Ping it",
     "description": "A ping test service"
   }

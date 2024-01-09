@@ -26,7 +26,7 @@ def get_command_line(py, svc, exe):
 def install_service(service_name, cmd, display_name='', description=None,
                     start_type='demand', error_control=win32service.SERVICE_ERROR_NORMAL,
                     run_interactive=False, service_deps=None, user_name=None, password=None, delayed_start=None,
-                    restart=0, env=None):
+                    restart=0, working_directory='.', env=None):
     service_type = win32service.SERVICE_WIN32_OWN_PROCESS
     if run_interactive:
         service_type = service_type | win32service.SERVICE_INTERACTIVE_PROCESS
@@ -36,7 +36,7 @@ def install_service(service_name, cmd, display_name='', description=None,
         hs = win32service.CreateService(scm, service_name, display_name, win32service.SERVICE_ALL_ACCESS,
                                         service_type, START_TYPE_MAP[start_type], error_control, cmd, None, 0,
                                         service_deps, user_name, password)
-        win32serviceutil.SetServiceCustomOption(service_name, "AppDirectory", os.getcwd())
+        win32serviceutil.SetServiceCustomOption(service_name, "AppDirectory", os.path.abspath(working_directory))
         if env:
             win32serviceutil.SetServiceCustomOption(service_name, "AppEnvironment", env)
         if description is not None:
