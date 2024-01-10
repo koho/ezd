@@ -166,8 +166,9 @@ def create_env(path):
 def main():
     parser = argparse.ArgumentParser(description='Easy Deployment Tool', add_help=True)
     parser.add_argument('command', help='Command <init|deploy|install|uninstall|start|stop>')
+    parser.add_argument('--config', help='config file', default=CONFIG_FILE)
     options = parser.parse_args()
-    has_config = os.path.exists(CONFIG_FILE)
+    has_config = os.path.exists(options.config)
     if options.command == "init":
         if not has_config:
             write_template()
@@ -178,7 +179,7 @@ def main():
             "to create.")
         sys.exit(1)
 
-    load_config()
+    load_config(options.config)
 
     action_map = {
         'deploy': deploy,
