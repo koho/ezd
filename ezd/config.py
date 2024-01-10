@@ -48,8 +48,8 @@ class Service(Config):
     delayed: bool = None
 
 
-def load_config():
-    with open(CONFIG_FILE, encoding='utf8') as f:
+def load_config(config):
+    with open(config, encoding='utf8') as f:
         config = json.load(f)
         Env.load(config.get("env", {}))
         Service.load(config.get("service", {}))
