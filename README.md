@@ -70,10 +70,11 @@ usage: ezd [-h] command
 Easy Deployment Tool
 
 positional arguments:
-  command     Command <init|deploy|install|uninstall|start|stop>
+  command          Command <init|deploy|install|uninstall|start|stop>
 
-optional arguments:
-  -h, --help  show this help message and exit
+options:
+  -h, --help       show this help message and exit
+  --config CONFIG  config file
 ```
 
 Available commands:
